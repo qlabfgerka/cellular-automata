@@ -1,1 +1,37 @@
-<p>one-dimensional works!</p>
+<div class="flexbox margin-top">
+  <mat-form-field appearance="fill" class="margin-right">
+    <mat-label>Size</mat-label>
+    <input matInput [(ngModel)]="size" type="number" />
+  </mat-form-field>
+
+  <mat-form-field appearance="fill" class="margin-right">
+    <mat-label>Rule</mat-label>
+    <input matInput [(ngModel)]="rule" type="number" min="0" max="255" />
+  </mat-form-field>
+
+  <mat-form-field appearance="fill">
+    <mat-label>Number</mat-label>
+    <input matInput [(ngModel)]="num" type="number" min="0" />
+  </mat-form-field>
+
+  <div class="break"></div>
+
+  <mat-label>Delay ({{ delay }}ms)</mat-label>
+  <div class="break"></div>
+  <mat-slider
+    thumbLabel
+    [displayWith]="formatLabel"
+    tickInterval="100"
+    step="100"
+    min="0"
+    max="5000"
+    [(ngModel)]="delay"
+  ></mat-slider>
+</div>
+
+<app-one-dimensional-board
+  [size]="size"
+  [rule]="rule"
+  [num]="num"
+  [delay]="delay"
+></app-one-dimensional-board>

@@ -1,0 +1,43 @@
+<div class="flexbox margin-bottom">
+  <button
+    mat-raised-button
+    color="accent"
+    class="margin-right"
+    (click)="step()"
+  >
+    STEP
+  </button>
+  <button
+    mat-raised-button
+    color="accent"
+    class="margin-right"
+    (click)="start()"
+  >
+    START
+  </button>
+  <button
+    mat-raised-button
+    color="accent"
+    class="margin-right"
+    (click)="pause()"
+  >
+    PAUSE
+  </button>
+  <button mat-raised-button color="accent" (click)="reset()">RESET</button>
+</div>
+
+<div class="flexbox">
+  <div *ngFor="let row of cells; let i = index" class="flexbox wide">
+    <div
+      *ngFor="let cell of row; let j = index"
+      class="cell i{{ i }} j{{ j }}"
+      (click)="toggle(i, j)"
+      [ngClass]="{
+        on: cells[i][j] === 1,
+        border: !isStarted,
+        onborder: cells[i][j] === 1 && isStarted,
+        offborder: cells[i][j] === 0 && isStarted
+      }"
+    ></div>
+  </div>
+</div>
