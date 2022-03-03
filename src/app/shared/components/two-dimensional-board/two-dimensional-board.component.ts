@@ -6,26 +6,25 @@ import { Component, Input, OnInit } from '@angular/core';
   styleUrls: ['./two-dimensional-board.component.scss'],
 })
 export class TwoDimensionalBoardComponent implements OnInit {
-  private _height!: number;
-  private _width!: number;
-  private _delay!: number;
+  public _height!: number;
+  public _width!: number;
+  public _delay!: number;
 
   public cells!: number[][];
   public isStarted: boolean = false;
 
   @Input() public set height(value: number) {
-    this._height = value;
+    this._height = value + 2;
     this.reset();
   }
 
   @Input() public set width(value: number) {
-    this._width = value;
+    this._width = value + 2;
     this.reset();
   }
 
   @Input() public set delay(value: number) {
     this._delay = value;
-    this.reset();
   }
 
   constructor() {}
@@ -52,17 +51,17 @@ export class TwoDimensionalBoardComponent implements OnInit {
       value.map((num: number) => num)
     );
     let alive;
-    for (let i = 0; i < this._height; i++) {
-      for (let j = 0; j < this._width; j++) {
+    for (let i = 1; i < this._height - 1; i++) {
+      for (let j = 1; j < this._width - 1; j++) {
         alive = 0;
         if (this.cells[i - 1][j - 1]) ++alive;
-        else if (this.cells[i - 1][j]) ++alive;
-        else if (this.cells[i - 1][j + 1]) ++alive;
-        else if (this.cells[i][j - 1]) ++alive;
-        else if (this.cells[i][j + 1]) ++alive;
-        else if (this.cells[i + 1][j - 1]) ++alive;
-        else if (this.cells[i + 1][j]) ++alive;
-        else if (this.cells[i + 1][j + 1]) ++alive;
+        if (this.cells[i - 1][j]) ++alive;
+        if (this.cells[i - 1][j + 1]) ++alive;
+        if (this.cells[i][j - 1]) ++alive;
+        if (this.cells[i][j + 1]) ++alive;
+        if (this.cells[i + 1][j - 1]) ++alive;
+        if (this.cells[i + 1][j]) ++alive;
+        if (this.cells[i + 1][j + 1]) ++alive;
 
         if (alive < 2 && this.cells[i][j] === 1) newCells[i][j] = 0;
         else if ((alive == 2 || alive == 3) && this.cells[i][j] === 1)
