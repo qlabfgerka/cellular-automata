@@ -3,15 +3,22 @@ import { CommonModule } from '@angular/common';
 
 import { TwoDimensionalRoutingModule } from './two-dimensional-routing.module';
 import { TwoDimensionalComponent } from './two-dimensional.component';
-
+import { TwoDimensionalBoardModule } from 'src/app/shared/components/two-dimensional-board/two-dimensional-board.module';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { FormsModule } from '@angular/forms';
+import { MatSliderModule } from '@angular/material/slider';
 
 @NgModule({
-  declarations: [
-    TwoDimensionalComponent
-  ],
+  declarations: [TwoDimensionalComponent],
   imports: [
     CommonModule,
-    TwoDimensionalRoutingModule
-  ]
+    TwoDimensionalRoutingModule,
+    TwoDimensionalBoardModule,
+    MatFormFieldModule,
+    MatInputModule,
+    FormsModule,
+    MatSliderModule,
+  ],
 })
-export class TwoDimensionalModule { }
+export class TwoDimensionalModule {}

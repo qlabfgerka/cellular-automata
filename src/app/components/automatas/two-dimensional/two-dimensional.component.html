@@ -1,1 +1,31 @@
-<p>two-dimensional works!</p>
+<div class="flexbox margin-top">
+  <mat-form-field appearance="fill" class="margin-right">
+    <mat-label>Height</mat-label>
+    <input matInput [(ngModel)]="height" type="number" />
+  </mat-form-field>
+
+  <mat-form-field appearance="fill" class="margin-right">
+    <mat-label>Width</mat-label>
+    <input matInput [(ngModel)]="width" type="number" />
+  </mat-form-field>
+
+  <div class="break"></div>
+
+  <mat-label>Delay ({{ delay }}ms)</mat-label>
+  <div class="break"></div>
+  <mat-slider
+    thumbLabel
+    [displayWith]="formatLabel"
+    tickInterval="100"
+    step="100"
+    min="0"
+    max="5000"
+    [(ngModel)]="delay"
+  ></mat-slider>
+</div>
+
+<app-two-dimensional-board
+  [height]="height"
+  [width]="width"
+  [delay]="delay"
+></app-two-dimensional-board>

@@ -40,7 +40,6 @@ export class OneDimensionalBoardComponent implements OnInit {
   }
 
   public toggle(i: number, j: number): void {
-    const div = document.getElementsByClassName(`cell i${i} j${j}`);
     if (this.cells[i][j] === 0) this.cells[i][j] = 1;
     else this.cells[i][j] = 0;
   }
@@ -86,12 +85,8 @@ export class OneDimensionalBoardComponent implements OnInit {
     }
   }
 
-  public async pause(): Promise<void> {
+  public pause(): void {
     this.isStarted = false;
-  }
-
-  public async sleep(): Promise<void> {
-    return new Promise((resolve) => setTimeout(resolve, this._delay));
   }
 
   public reset(): void {
@@ -118,5 +113,9 @@ export class OneDimensionalBoardComponent implements OnInit {
     }
 
     return bits;
+  }
+
+  private async sleep(): Promise<void> {
+    return new Promise((resolve) => setTimeout(resolve, this._delay));
   }
 }
