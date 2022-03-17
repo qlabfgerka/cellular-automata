@@ -10,11 +10,18 @@ const routes: Routes = [
       ).then((m) => m.OneDimensionalModule),
   },
   {
-    path: `2d`,
+    path: `game-of-life`,
     loadChildren: () =>
       import(
         './components/automatas/two-dimensional/two-dimensional.module'
       ).then((m) => m.TwoDimensionalModule),
+  },
+  {
+    path: `caverns`,
+    loadChildren: () =>
+      import('./components/automatas/caverns/caverns.module').then(
+        (m) => m.CavernsModule
+      ),
   },
 ];
 
