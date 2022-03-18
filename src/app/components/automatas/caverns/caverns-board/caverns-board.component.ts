@@ -98,8 +98,8 @@ export class CavernsBoardComponent implements OnInit {
     this.isResetting = false;
   }
 
-  public setCell(i: number, j: number): void {
-    this.cells[i][j] = this.selectedItem;
+  public setCell(i: number, j: number, event: MouseEvent): void {
+    if (event.buttons === 1) this.cells[i][j] = this.selectedItem;
   }
 
   public step(): void {}

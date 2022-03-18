@@ -8,7 +8,7 @@ import { Component, OnInit } from '@angular/core';
 export class CavernsComponent implements OnInit {
   public height: number = 20;
   public width: number = 40;
-  public delay: number = 1000;
+  public delay: number = 100;
   public genChance: number = 60;
   public genIterations: number = 5;
   public birthLimit: number = 4;

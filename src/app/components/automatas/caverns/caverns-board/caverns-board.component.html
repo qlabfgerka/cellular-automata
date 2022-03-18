@@ -44,7 +44,7 @@
       *ngFor="let cell of row; let j = index"
       class="cell i{{ i }} j{{ j }}"
       [ngStyle]="{ 'background-color': cells[i][j].color }"
-      (click)="setCell(i, j)"
+      (mouseover)="setCell(i, j, $event)"
       [ngClass]="{
         border: !isStarted,
         onborder: cells[i][j] === items[1] && isStarted,
