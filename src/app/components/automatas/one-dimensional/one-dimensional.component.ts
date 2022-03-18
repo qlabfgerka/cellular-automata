@@ -11,11 +11,17 @@ export class OneDimensionalComponent implements OnInit {
   public num: number = 32768;
   public delay: number = 1000;
 
+  public settingsVisible: boolean = true;
+
   constructor() {}
 
   ngOnInit(): void {}
 
   public formatLabel(value: number): string {
     return `${value / 1000}s`;
+  }
+
+  public toggleVisibility(): void {
+    this.settingsVisible = !this.settingsVisible;
   }
 }

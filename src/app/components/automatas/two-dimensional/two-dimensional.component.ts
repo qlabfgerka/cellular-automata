@@ -10,11 +10,17 @@ export class TwoDimensionalComponent implements OnInit {
   public width: number = 15;
   public delay: number = 1000;
 
+  public settingsVisible: boolean = true;
+
   constructor() {}
 
   ngOnInit(): void {}
 
   public formatLabel(value: number): string {
     return `${value / 1000}s`;
+  }
+
+  public toggleVisibility(): void {
+    this.settingsVisible = !this.settingsVisible;
   }
 }

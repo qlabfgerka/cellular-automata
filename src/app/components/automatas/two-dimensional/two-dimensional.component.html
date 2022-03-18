@@ -1,4 +1,14 @@
-<div class="flexbox margin-top">
+<div class="flexbox margin-top margin-bottom">
+  <button
+    mat-raised-button
+    color="accent"
+    class="margin-right"
+    (click)="toggleVisibility()"
+  >
+    {{ settingsVisible ? "HIDE" : "SHOW" }}
+  </button>
+</div>
+<div class="flexbox margin-top" *ngIf="settingsVisible">
   <mat-form-field appearance="fill" class="margin-right">
     <mat-label>Height</mat-label>
     <input matInput [(ngModel)]="height" type="number" />

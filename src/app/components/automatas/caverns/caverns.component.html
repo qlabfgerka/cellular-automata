@@ -1,1 +1,67 @@
-<p>caverns works!</p>
+<div class="flexbox margin-top margin-bottom">
+  <button
+    mat-raised-button
+    color="accent"
+    class="margin-right"
+    (click)="toggleVisibility()"
+  >
+    {{ settingsVisible ? "HIDE" : "SHOW" }}
+  </button>
+</div>
+<div class="flexbox margin-top" *ngIf="settingsVisible">
+  <mat-form-field appearance="fill" class="margin-right">
+    <mat-label>Height</mat-label>
+    <input matInput [(ngModel)]="height" type="number" />
+  </mat-form-field>
+
+  <mat-form-field appearance="fill" class="margin-right">
+    <mat-label>Width</mat-label>
+    <input matInput [(ngModel)]="width" type="number" />
+  </mat-form-field>
+
+  <div class="break"></div>
+
+  <mat-form-field appearance="fill" class="margin-right">
+    <mat-label>Generation chance (%)</mat-label>
+    <input matInput [(ngModel)]="genChance" type="number" />
+  </mat-form-field>
+
+  <mat-form-field appearance="fill" class="margin-right">
+    <mat-label>Generation iterations</mat-label>
+    <input matInput [(ngModel)]="genIterations" type="number" />
+  </mat-form-field>
+
+  <mat-form-field appearance="fill" class="margin-right">
+    <mat-label>Birth limit (to revive cell)</mat-label>
+    <input matInput [(ngModel)]="birthLimit" type="number" min="0" max="8" />
+  </mat-form-field>
+
+  <mat-form-field appearance="fill" class="margin-right">
+    <mat-label>Death limit (to kill cell)</mat-label>
+    <input matInput [(ngModel)]="deathLimit" type="number" min="0" max="8" />
+  </mat-form-field>
+
+  <div class="break"></div>
+
+  <mat-label>Delay ({{ delay }}ms)</mat-label>
+  <div class="break"></div>
+  <mat-slider
+    thumbLabel
+    [displayWith]="formatLabel"
+    tickInterval="100"
+    step="100"
+    min="0"
+    max="5000"
+    [(ngModel)]="delay"
+  ></mat-slider>
+</div>
+
+<app-caverns-board
+  [height]="height"
+  [width]="width"
+  [genChance]="genChance"
+  [genIterations]="genIterations"
+  [birthLimit]="birthLimit"
+  [deathLimit]="deathLimit"
+  [delay]="delay"
+></app-caverns-board>
