@@ -138,6 +138,7 @@ export class CavernsBoardComponent implements OnInit {
         }
       }
     }
+    this.cells.map((row) => row.map((cell: Cell) => (cell.flowed = false)));
     this.cells = newCells;
   }
 
@@ -222,32 +223,47 @@ export class CavernsBoardComponent implements OnInit {
       newCells[i][j].name === this.items[0].name
     ) {
       if (
-        this.cells[i][j - 1].name === this.items[4].name ||
-        this.cells[i][j - 1].name === this.items[0].name
+        (newCells[i][j - 1].name === this.items[4].name ||
+          newCells[i][j - 1].name === this.items[0].name) &&
+        !newCells[i][j - 1].flowed
       ) {
         if (newCells[i][j].volume! <= 0.25) return;
-        newCells[i][j].volume! -= 0.25;
-        this.handleFlow(newCells, i, j - 1);
+        if (this.handleFlow(newCells, i, j - 1, false))
+          newCells[i][j].volume! -= 0.25;
       }
       if (
-        this.cells[i][j + 1].name === this.items[4].name ||
-        this.cells[i][j + 1].name === this.items[0].name
+        (newCells[i][j + 1].name === this.items[4].name ||
+          newCells[i][j + 1].name === this.items[0].name) &&
+        !newCells[i][j + 1].flowed
       ) {
         if (newCells[i][j].volume! <= 0.25) return;
-        newCells[i][j].volume! -= 0.25;
-        this.handleFlow(newCells, i, j + 1);
+        if (this.handleFlow(newCells, i, j + 1, true))
+          newCells[i][j].volume! -= 0.25;
       }
+      newCells[i][j].flowed = true;
     }
   }
 
-  private handleFlow(newCells: Array<Array<Cell>>, i: number, j: number): void {
+  private handleFlow(
+    newCells: Array<Array<Cell>>,
+    i: number,
+    j: number,
+    right: boolean
+  ): boolean {
     if (this.cells[i][j].name === this.items[4].name) {
       newCells[i][j] = Object.assign({}, this.items[0]);
       newCells[i][j].volume = 0.25;
-    } else if (this.cells[i][j].name === this.items[0].name) {
+      return true;
+    } else if (
+      right
+        ? this.cells[i][j].name === this.items[0].name
+        : newCells[i][j].name === this.items[0].name
+    ) {
       newCells[i][j] = this.cells[i][j];
       newCells[i][j].volume! += 0.25;
+      return true;
     }
+    return false;
   }
 
   private async sleep(): Promise<void> {
