@@ -81,14 +81,16 @@ export class CavernsBoardComponent implements OnInit {
       );
       for (let i = 1; i < this._height - 1; i++) {
         for (let j = 1; j < this._width - 1; j++) {
-          neighbours = this.countNeighbours(i, j, this.items[1]);
+          neighbours = this.countNeighbours(i, j, this.items[1].name!);
 
-          if (this.cells[i][j] === this.items[1]) {
-            if (neighbours < this._deathLimit) newCells[i][j] = this.items[4];
-            else newCells[i][j] = this.items[1];
-          } else if (this.cells[i][j] === this.items[4]) {
-            if (neighbours > this._birthLimit) newCells[i][j] = this.items[1];
-            else newCells[i][j] = this.items[4];
+          if (this.cells[i][j].name === this.items[1].name) {
+            if (neighbours < this._deathLimit)
+              newCells[i][j] = Object.assign({}, this.items[4]);
+            else newCells[i][j] = Object.assign({}, this.items[1]);
+          } else if (this.cells[i][j].name === this.items[4].name) {
+            if (neighbours > this._birthLimit)
+              newCells[i][j] = Object.assign({}, this.items[1]);
+            else newCells[i][j] = Object.assign({}, this.items[4]);
           }
         }
       }
@@ -98,11 +100,39 @@ export class CavernsBoardComponent implements OnInit {
     this.isResetting = false;
   }
 
-  public setCell(i: number, j: number, event: MouseEvent): void {
-    if (event.buttons === 1) this.cells[i][j] = this.selectedItem;
+  public setCell(i: number, j: number, event?: MouseEvent): void {
+    if ((event && event.buttons === 1) || !event)
+      this.cells[i][j] = Object.assign({}, this.selectedItem);
+    else if (event && event.buttons === 2) console.log(this.cells[i][j]);
   }
 
-  public step(): void {}
+  public step(): void {
+    /*const newCells = this.cells.map((row: Array<Cell>) =>
+      row.map((cell: Cell) => {
+        if (
+          cell.name !== this.items[1].name &&
+          cell.name !== this.items[4].name
+        )
+          return Object.assign({}, this.items[4]);
+        else return cell;
+      })
+    );*/
+    const newCells: Array<Array<Cell>> = new Array(this._height)
+      .fill(Object.assign({}, this.items[4]))
+      .map(() => new Array(this._width).fill(Object.assign({}, this.items[4])));
+    for (let i = 0; i < this._height; i++) {
+      for (let j = 0; j < this._width; j++) {
+        if (this.cells[i][j].name === this.items[1].name)
+          newCells[i][j] = Object.assign({}, this.items[1]);
+
+        if (i >= 1 && j >= 1 && i < this._height - 1 && j < this._width - 1) {
+          if (this.cells[i][j].name === this.items[0].name)
+            this.handleWater(newCells, i, j);
+        }
+      }
+    }
+    this.cells = newCells;
+  }
 
   public async start(): Promise<void> {}
 
@@ -114,11 +144,11 @@ export class CavernsBoardComponent implements OnInit {
       this.cells[i] = new Array<Cell>();
       for (let j = 0; j < this._width; j++) {
         if (i == 0 || j == 0 || i == this._height - 1 || j == this._width - 1)
-          this.cells[i].push(this.items[1]);
+          this.cells[i].push(Object.assign({}, this.items[1]));
         else {
           if (this.getRandomIntInclusive(0, 100) < this._genChance)
-            this.cells[i].push(this.items[4]);
-          else this.cells[i].push(this.items[1]);
+            this.cells[i].push(Object.assign({}, this.items[4]));
+          else this.cells[i].push(Object.assign({}, this.items[1]));
         }
       }
     }
@@ -128,21 +158,33 @@ export class CavernsBoardComponent implements OnInit {
     return Math.floor(Math.random() * (max - min + 1) + min);
   }
 
-  private countNeighbours(i: number, j: number, neighbour: Cell): number {
+  private countNeighbours(i: number, j: number, neighbour: string): number {
     let neighbours = 0;
 
-    if (this.cells[i - 1][j - 1] === neighbour) ++neighbours;
-    if (this.cells[i - 1][j] === neighbour) ++neighbours;
-    if (this.cells[i - 1][j + 1] === neighbour) ++neighbours;
+    if (this.cells[i - 1][j - 1].name === neighbour) ++neighbours;
+    if (this.cells[i - 1][j].name === neighbour) ++neighbours;
+    if (this.cells[i - 1][j + 1].name === neighbour) ++neighbours;
 
-    if (this.cells[i][j - 1] === neighbour) ++neighbours;
-    if (this.cells[i][j + 1] === neighbour) ++neighbours;
+    if (this.cells[i][j - 1].name === neighbour) ++neighbours;
+    if (this.cells[i][j + 1].name === neighbour) ++neighbours;
 
-    if (this.cells[i + 1][j - 1] === neighbour) ++neighbours;
-    if (this.cells[i + 1][j] === neighbour) ++neighbours;
-    if (this.cells[i + 1][j + 1] === neighbour) ++neighbours;
+    if (this.cells[i + 1][j - 1].name === neighbour) ++neighbours;
+    if (this.cells[i + 1][j].name === neighbour) ++neighbours;
+    if (this.cells[i + 1][j + 1].name === neighbour) ++neighbours;
 
     return neighbours;
+  }
+
+  private handleWater(
+    newCells: Array<Array<Cell>>,
+    i: number,
+    j: number
+  ): void {
+    if (this.cells[i + 1][j].name !== this.items[1].name) {
+      newCells[i + 1][j] = this.cells[i][j];
+    } else if (newCells[i][j].name === this.items[0].name) {
+      newCells[i][j].volume! += this.cells[i][j].volume!;
+    } else newCells[i][j] = this.cells[i][j];
   }
 
   private async sleep(): Promise<void> {

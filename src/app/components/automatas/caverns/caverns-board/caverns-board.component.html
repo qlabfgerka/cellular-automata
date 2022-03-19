@@ -43,8 +43,12 @@
     <div
       *ngFor="let cell of row; let j = index"
       class="cell i{{ i }} j{{ j }}"
-      [ngStyle]="{ 'background-color': cells[i][j].color }"
+      [ngStyle]="{
+        'background-color': cells[i][j].color,
+        filter: 'brightness(' + (2 - cells[i][j].volume!) + ')'
+      }"
       (mouseover)="setCell(i, j, $event)"
+      (click)="setCell(i, j)"
       [ngClass]="{
         border: !isStarted,
         onborder: cells[i][j] === items[1] && isStarted,
