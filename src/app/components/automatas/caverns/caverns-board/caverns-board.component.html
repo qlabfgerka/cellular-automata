@@ -36,6 +36,13 @@
   >
     {{ selectedItem.name!.toUpperCase() }}
   </button>
+
+  <div class="break"></div>
+
+  <mat-form-field appearance="fill" class="margin-right">
+    <mat-label>Volume</mat-label>
+    <input matInput [(ngModel)]="volume" type="number" min="0" max="5" />
+  </mat-form-field>
 </div>
 
 <div class="flexbox">

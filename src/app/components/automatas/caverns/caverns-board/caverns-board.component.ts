@@ -23,6 +23,7 @@ export class CavernsBoardComponent implements OnInit {
   public items!: Array<Cell>;
   public isResetting!: boolean;
   public selectedItem: Cell;
+  public volume: number = 1;
   public isStarted: boolean = false;
   //#endregion publics
 
@@ -106,9 +107,10 @@ export class CavernsBoardComponent implements OnInit {
   }
 
   public setCell(i: number, j: number, event?: MouseEvent): void {
-    if ((event && event.buttons === 1) || !event)
+    if ((event && event.buttons === 1) || !event) {
       this.cells[i][j] = Object.assign({}, this.selectedItem);
-    else if (event && event.buttons === 2) console.log(this.cells[i][j]);
+      this.cells[i][j].volume = this.volume;
+    } else if (event && event.buttons === 2) console.log(this.cells[i][j]);
   }
 
   public step(): void {
@@ -185,36 +187,53 @@ export class CavernsBoardComponent implements OnInit {
     i: number,
     j: number
   ): void {
-    if (this.cells[i + 1][j].name !== this.items[1].name) {
+    /*if (this.cells[i + 1][j].name !== this.items[1].name) {
       if (newCells[i + 1][j].name === this.items[0].name)
         newCells[i + 1][j].volume! += this.cells[i][j].volume!;
       else newCells[i + 1][j] = this.cells[i][j];
     } else if (newCells[i][j].name === this.items[0].name) {
       newCells[i][j].volume! += this.cells[i][j].volume!;
+    } else newCells[i][j] = this.cells[i][j];*/
+    if (this.cells[i + 1][j].name === this.items[4].name) {
+      newCells[i][j] = Object.assign({}, this.items[4]);
+      newCells[i + 1][j] = this.cells[i][j];
+    } else if (this.cells[i + 1][j].name === this.items[0].name) {
+      if (
+        this.cells[i + 1][j].volume! + this.cells[i][j].volume! >=
+        this._waterThreshold
+      ) {
+        const remainder = this._waterThreshold - this.cells[i + 1][j].volume!;
+        newCells[i][j] = this.cells[i][j];
+        newCells[i + 1][j] = this.cells[i + 1][j];
+        newCells[i][j].volume = this.cells[i][j].volume! - remainder;
+        newCells[i + 1][j].volume = this.cells[i + 1][j].volume! + remainder;
+      } else {
+        newCells[i][j] = Object.assign({}, this.items[4]);
+        newCells[i + 1][j] = this.cells[i + 1][j];
+        newCells[i + 1][j].volume! += this.cells[i][j].volume!;
+      }
     } else newCells[i][j] = this.cells[i][j];
 
-    if (this.cells[i + 1][j].name === this.items[1].name) {
-      if (newCells[i][j].volume! <= 0.25) return;
+    if (newCells[i][j].volume === 0)
+      newCells[i][j] = Object.assign({}, this.items[4]);
+
+    if (
+      this.cells[i + 1][j].name === this.items[1].name &&
+      newCells[i][j].name === this.items[0].name
+    ) {
       if (
-        (this.cells[i][j - 1].name === this.items[4].name ||
-          this.cells[i][j - 1].name === this.items[0].name) &&
-        (this.cells[i][j + 1].name === this.items[4].name ||
-          this.cells[i][j + 1].name === this.items[0].name)
-      ) {
-        if (newCells[i][j].volume! <= 0.5) return;
-        newCells[i][j].volume! -= 0.5;
-        this.handleFlow(newCells, i, j - 1);
-        this.handleFlow(newCells, i, j + 1);
-      } else if (
         this.cells[i][j - 1].name === this.items[4].name ||
         this.cells[i][j - 1].name === this.items[0].name
       ) {
+        if (newCells[i][j].volume! <= 0.25) return;
         newCells[i][j].volume! -= 0.25;
         this.handleFlow(newCells, i, j - 1);
-      } else if (
+      }
+      if (
         this.cells[i][j + 1].name === this.items[4].name ||
         this.cells[i][j + 1].name === this.items[0].name
       ) {
+        if (newCells[i][j].volume! <= 0.25) return;
         newCells[i][j].volume! -= 0.25;
         this.handleFlow(newCells, i, j + 1);
       }
@@ -222,13 +241,13 @@ export class CavernsBoardComponent implements OnInit {
   }
 
   private handleFlow(newCells: Array<Array<Cell>>, i: number, j: number): void {
-    if (newCells[i][j].name === this.items[4].name) {
+    if (this.cells[i][j].name === this.items[4].name) {
       newCells[i][j] = Object.assign({}, this.items[0]);
       newCells[i][j].volume = 0.25;
-    } /*else if (newCells[i][j].name === this.items[0].name) {
+    } else if (this.cells[i][j].name === this.items[0].name) {
       newCells[i][j] = this.cells[i][j];
-      newCells[i][j].volume! = this.cells[i][j].volume! + 0.25;
-    }*/
+      newCells[i][j].volume! += 0.25;
+    }
   }
 
   private async sleep(): Promise<void> {
