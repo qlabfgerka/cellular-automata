@@ -15,6 +15,7 @@ export class CavernsBoardComponent implements OnInit {
   private _birthLimit!: number;
   private _deathLimit!: number;
   private _delay!: number;
+  private _waterThreshold!: number;
   //#endregion privates
 
   //#region publics
@@ -52,6 +53,10 @@ export class CavernsBoardComponent implements OnInit {
 
   @Input() public set deathLimit(value: number) {
     this._deathLimit = value;
+  }
+
+  @Input() public set waterThreshold(value: number) {
+    this._waterThreshold = value;
   }
   //#endregion setters
 
@@ -181,10 +186,49 @@ export class CavernsBoardComponent implements OnInit {
     j: number
   ): void {
     if (this.cells[i + 1][j].name !== this.items[1].name) {
-      newCells[i + 1][j] = this.cells[i][j];
+      if (newCells[i + 1][j].name === this.items[0].name)
+        newCells[i + 1][j].volume! += this.cells[i][j].volume!;
+      else newCells[i + 1][j] = this.cells[i][j];
     } else if (newCells[i][j].name === this.items[0].name) {
       newCells[i][j].volume! += this.cells[i][j].volume!;
     } else newCells[i][j] = this.cells[i][j];
+
+    if (this.cells[i + 1][j].name === this.items[1].name) {
+      if (newCells[i][j].volume! <= 0.25) return;
+      if (
+        (this.cells[i][j - 1].name === this.items[4].name ||
+          this.cells[i][j - 1].name === this.items[0].name) &&
+        (this.cells[i][j + 1].name === this.items[4].name ||
+          this.cells[i][j + 1].name === this.items[0].name)
+      ) {
+        if (newCells[i][j].volume! <= 0.5) return;
+        newCells[i][j].volume! -= 0.5;
+        this.handleFlow(newCells, i, j - 1);
+        this.handleFlow(newCells, i, j + 1);
+      } else if (
+        this.cells[i][j - 1].name === this.items[4].name ||
+        this.cells[i][j - 1].name === this.items[0].name
+      ) {
+        newCells[i][j].volume! -= 0.25;
+        this.handleFlow(newCells, i, j - 1);
+      } else if (
+        this.cells[i][j + 1].name === this.items[4].name ||
+        this.cells[i][j + 1].name === this.items[0].name
+      ) {
+        newCells[i][j].volume! -= 0.25;
+        this.handleFlow(newCells, i, j + 1);
+      }
+    }
+  }
+
+  private handleFlow(newCells: Array<Array<Cell>>, i: number, j: number): void {
+    if (newCells[i][j].name === this.items[4].name) {
+      newCells[i][j] = Object.assign({}, this.items[0]);
+      newCells[i][j].volume = 0.25;
+    } /*else if (newCells[i][j].name === this.items[0].name) {
+      newCells[i][j] = this.cells[i][j];
+      newCells[i][j].volume! = this.cells[i][j].volume! + 0.25;
+    }*/
   }
 
   private async sleep(): Promise<void> {

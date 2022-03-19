@@ -43,6 +43,19 @@
 
   <div class="break"></div>
 
+  <mat-form-field appearance="fill" class="margin-right">
+    <mat-label>Water threshold</mat-label>
+    <input
+      matInput
+      [(ngModel)]="waterThreshold"
+      type="number"
+      min="1"
+      max="5"
+    />
+  </mat-form-field>
+
+  <div class="break"></div>
+
   <mat-label>Delay ({{ delay }}ms)</mat-label>
   <div class="break"></div>
   <mat-slider
@@ -63,5 +76,6 @@
   [genIterations]="genIterations"
   [birthLimit]="birthLimit"
   [deathLimit]="deathLimit"
+  [waterThreshold]="waterThreshold"
   [delay]="delay"
 ></app-caverns-board>
