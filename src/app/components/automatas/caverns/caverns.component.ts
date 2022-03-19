@@ -13,7 +13,7 @@ export class CavernsComponent implements OnInit {
   public genIterations: number = 5;
   public birthLimit: number = 4;
   public deathLimit: number = 4;
-  public waterThreshold: number = 2.5;
+  public waterThreshold: number = 1;
 
   public settingsVisible: boolean = true;
 

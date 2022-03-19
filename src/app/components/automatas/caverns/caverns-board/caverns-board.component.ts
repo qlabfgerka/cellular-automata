@@ -219,7 +219,8 @@ export class CavernsBoardComponent implements OnInit {
       newCells[i][j] = Object.assign({}, this.items[4]);
 
     if (
-      this.cells[i + 1][j].name === this.items[1].name &&
+      (this.cells[i + 1][j].name === this.items[1].name ||
+        this.cells[i + 1][j].name === this.items[0].name) &&
       newCells[i][j].name === this.items[0].name
     ) {
       if (
@@ -241,6 +242,17 @@ export class CavernsBoardComponent implements OnInit {
           newCells[i][j].volume! -= 0.25;
       }
       newCells[i][j].flowed = true;
+    }
+
+    if (newCells[i][j].volume! > this._waterThreshold) {
+      if (newCells[i - 1][j].name === this.items[0].name) {
+        newCells[i - 1][j].volume! +=
+          newCells[i][j].volume! - this._waterThreshold;
+      } else if (newCells[i - 1][j].name !== this.items[1].name) {
+        newCells[i - 1][j] = Object.assign({}, this.items[0]);
+        newCells[i - 1][j].volume =
+          newCells[i][j].volume! - this._waterThreshold;
+      }
     }
   }
 
