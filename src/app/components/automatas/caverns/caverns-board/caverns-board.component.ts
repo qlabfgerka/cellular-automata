@@ -142,9 +142,17 @@ export class CavernsBoardComponent implements OnInit {
     this.cells = newCells;
   }
 
-  public async start(): Promise<void> {}
+  public async start(): Promise<void> {
+    this.isStarted = true;
+    while (this.isStarted) {
+      this.step();
+      await this.sleep();
+    }
+  }
 
-  public pause(): void {}
+  public pause(): void {
+    this.isStarted = false;
+  }
 
   private initCells(): void {
     this.cells = new Array<Array<Cell>>();
@@ -198,6 +206,7 @@ export class CavernsBoardComponent implements OnInit {
     if (this.cells[i + 1][j].name === this.items[4].name) {
       newCells[i][j] = Object.assign({}, this.items[4]);
       newCells[i + 1][j] = this.cells[i][j];
+      newCells[i + 1][j].flowed = true;
     } else if (this.cells[i + 1][j].name === this.items[0].name) {
       if (
         this.cells[i + 1][j].volume! + this.cells[i][j].volume! >=
@@ -208,10 +217,13 @@ export class CavernsBoardComponent implements OnInit {
         newCells[i + 1][j] = this.cells[i + 1][j];
         newCells[i][j].volume = this.cells[i][j].volume! - remainder;
         newCells[i + 1][j].volume = this.cells[i + 1][j].volume! + remainder;
+        newCells[i][j].flowed = true;
+        newCells[i + 1][j].flowed = true;
       } else {
         newCells[i][j] = Object.assign({}, this.items[4]);
         newCells[i + 1][j] = this.cells[i + 1][j];
         newCells[i + 1][j].volume! += this.cells[i][j].volume!;
+        newCells[i + 1][j].flowed = true;
       }
     } else newCells[i][j] = this.cells[i][j];
 
@@ -244,7 +256,10 @@ export class CavernsBoardComponent implements OnInit {
       newCells[i][j].flowed = true;
     }
 
-    if (newCells[i][j].volume! > this._waterThreshold) {
+    if (
+      newCells[i][j].volume! > this._waterThreshold &&
+      !newCells[i - 1][j].flowed
+    ) {
       if (newCells[i - 1][j].name === this.items[0].name) {
         newCells[i - 1][j].volume! +=
           newCells[i][j].volume! - this._waterThreshold;
