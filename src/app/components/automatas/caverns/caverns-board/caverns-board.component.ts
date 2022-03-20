@@ -2,6 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { Cell } from 'src/app/components/models/cell/cell.model';
 import { FluidService } from 'src/app/services/items/fluid/fluid.service';
 import { ItemsService } from 'src/app/services/items/items.service';
+import { SandService } from 'src/app/services/items/sand/sand.service';
 import { WoodService } from 'src/app/services/items/wood/wood.service';
 @Component({
   selector: 'app-caverns-board',
@@ -66,7 +67,8 @@ export class CavernsBoardComponent implements OnInit {
   constructor(
     private readonly itemsService: ItemsService,
     private readonly fluidService: FluidService,
-    private readonly woodService: WoodService
+    private readonly woodService: WoodService,
+    private readonly sandService: SandService
   ) {
     this.items = this.itemsService.getItems();
     this.selectedItem = this.items[0];
@@ -142,6 +144,14 @@ export class CavernsBoardComponent implements OnInit {
               );
             if (item === 1 && this.cells[i][j].name === this.items[3].name)
               this.woodService.handleWood(
+                this.cells,
+                newCells,
+                this.items,
+                i,
+                j
+              );
+            if (item === 2 && this.cells[i][j].name === this.items[2].name)
+              this.sandService.handleSand(
                 this.cells,
                 newCells,
                 this.items,
