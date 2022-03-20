@@ -3,6 +3,7 @@ export class Cell {
   color: string | undefined | null = null;
   volume: number | undefined | null = null;
   flowed: boolean | undefined | null = null;
+  behavior: number | undefined | null = null;
 
   public constructor(init?: Partial<Cell>) {
     Object.assign(this, init);
