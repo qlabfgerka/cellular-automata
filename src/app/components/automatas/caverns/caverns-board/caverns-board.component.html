@@ -1,0 +1,66 @@
+<div class="flexbox margin-bottom">
+  <button
+    mat-raised-button
+    color="accent"
+    class="margin-right"
+    (click)="step()"
+  >
+    STEP
+  </button>
+  <button
+    mat-raised-button
+    color="accent"
+    class="margin-right"
+    (click)="start()"
+  >
+    START
+  </button>
+  <button
+    mat-raised-button
+    color="accent"
+    class="margin-right"
+    (click)="pause()"
+  >
+    PAUSE
+  </button>
+  <button mat-raised-button color="accent" (click)="reset()">RESET</button>
+
+  <div class="break"></div>
+
+  <p class="margin-right">Selected item:</p>
+  <button
+    mat-raised-button
+    color="accent"
+    class="item-btn"
+    (click)="changeItem()"
+  >
+    {{ selectedItem.name!.toUpperCase() }}
+  </button>
+
+  <div class="break"></div>
+
+  <mat-form-field appearance="fill" class="margin-right">
+    <mat-label>Volume</mat-label>
+    <input matInput [(ngModel)]="volume" type="number" min="0" max="5" />
+  </mat-form-field>
+</div>
+
+<div class="flexbox">
+  <div *ngFor="let row of cells; let i = index" class="flexbox wide">
+    <div
+      *ngFor="let cell of row; let j = index"
+      class="cell i{{ i }} j{{ j }}"
+      [ngStyle]="{
+        'background-color': cells[i][j].color,
+        filter: 'brightness(' + (2 - cells[i][j].volume!) + ')'
+      }"
+      (mouseover)="setCell(i, j, $event)"
+      (click)="setCell(i, j)"
+      [ngClass]="{
+        border: !isStarted,
+        onborder: cells[i][j] === items[1] && isStarted,
+        offborder: cells[i][j] === items[4] && isStarted
+      }"
+    ></div>
+  </div>
+</div>
