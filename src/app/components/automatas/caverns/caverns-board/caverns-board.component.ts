@@ -133,7 +133,10 @@ export class CavernsBoardComponent implements OnInit {
             newCells[i][j] = Object.assign({}, this.items[1]);
 
           if (i >= 1 && j >= 1 && i < this._height - 1 && j < this._width - 1) {
-            if (item === 0 && this.cells[i][j].name === this.items[0].name)
+            if (
+              item === this.cells[i][j].behavior &&
+              this.cells[i][j].name === this.items[0].name
+            )
               this.fluidService.handleWater(
                 this.cells,
                 newCells,
@@ -142,7 +145,10 @@ export class CavernsBoardComponent implements OnInit {
                 j,
                 this._waterThreshold
               );
-            if (item === 1 && this.cells[i][j].name === this.items[3].name)
+            if (
+              item === this.cells[i][j].behavior &&
+              this.cells[i][j].name === this.items[3].name
+            )
               this.woodService.handleWood(
                 this.cells,
                 newCells,
@@ -150,7 +156,10 @@ export class CavernsBoardComponent implements OnInit {
                 i,
                 j
               );
-            if (item === 2 && this.cells[i][j].name === this.items[2].name)
+            if (
+              item === this.cells[i][j].behavior &&
+              this.cells[i][j].name === this.items[2].name
+            )
               this.sandService.handleSand(
                 this.cells,
                 newCells,
