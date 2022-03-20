@@ -169,7 +169,7 @@ export class CavernsBoardComponent implements OnInit {
                 j
               );
             if (item === this.cells[i][j].behavior && item === 4)
-              this.fireService.handleLightSmoke(
+              this.fireService.handleSmoke(
                 this.cells,
                 newCells,
                 this.items,

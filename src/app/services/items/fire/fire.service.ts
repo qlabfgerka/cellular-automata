@@ -23,10 +23,19 @@ export class FireService {
       cells[i + 1][j].name === items[2].name
     ) {
       newCells[i][j] = Object.assign({}, items[6]);
+    } else if (cells[i + 1][j].name === items[3].name) {
+      newCells[i + 1][j] = Object.assign({}, items[4]);
+      newCells[i][j] = Object.assign({}, items[7]);
+
+      if (cells[i + 1][j - 1].name === items[3].name)
+        newCells[i][j - 1] = Object.assign({}, items[5]);
+
+      if (cells[i + 1][j + 1].name === items[3].name)
+        newCells[i][j + 1] = Object.assign({}, items[5]);
     }
   }
 
-  public handleLightSmoke(
+  public handleSmoke(
     cells: Array<Array<Cell>>,
     newCells: Array<Array<Cell>>,
     items: Array<Cell>,
