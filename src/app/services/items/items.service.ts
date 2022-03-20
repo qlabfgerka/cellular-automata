@@ -39,4 +39,8 @@ export class ItemsService {
   public getItems(): Array<Cell> {
     return this.items;
   }
+
+  public addItem(item: Cell): void {
+    this.items.push(item);
+  }
 }
