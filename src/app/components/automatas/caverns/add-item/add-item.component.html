@@ -1,0 +1,61 @@
+<div class="flexbox">
+  <form
+    class="form"
+    [formGroup]="addItemForm"
+    (ngSubmit)="addItem()"
+    *ngIf="addItemForm"
+  >
+    <h1 class="center-text">Add item</h1>
+    <div class="break"></div>
+
+    <mat-form-field class="wide" appearance="fill">
+      <mat-label>Name</mat-label>
+      <input matInput formControlName="name" />
+      <mat-error *ngIf="errorControl?.['name']?.errors?.['required']">
+        Please enter a name.
+      </mat-error>
+    </mat-form-field>
+
+    <div class="break"></div>
+
+    <mat-form-field class="wide" appearance="fill">
+      <mat-label>Color</mat-label>
+      <input matInput formControlName="color" />
+      <mat-error *ngIf="errorControl?.['color']?.errors?.['required']">
+        Please enter a color.
+      </mat-error>
+      <mat-error
+        *ngIf="errorControl?.['color']?.errors?.['minlength'] || errorControl?.['color']?.errors?.['maxlength']"
+      >
+        Please enter a valid color.
+      </mat-error>
+    </mat-form-field>
+
+    <div class="break"></div>
+
+    <mat-form-field appearance="fill">
+      <mat-label>Behavior</mat-label>
+      <mat-select formControlName="behavior">
+        <mat-option *ngFor="let behavior of behaviors" [value]="behavior.value">
+          {{ behavior.name }}
+        </mat-option>
+      </mat-select>
+      <mat-error *ngIf="errorControl?.['behavior']?.errors?.['required']">
+        Please select a behavior.
+      </mat-error>
+    </mat-form-field>
+
+    <div class="break"></div>
+
+    <div class="flexbox">
+      <button
+        mat-raised-button
+        color="primary"
+        type="submit"
+        [disabled]="!addItemForm.valid"
+      >
+        ADD
+      </button>
+    </div>
+  </form>
+</div>

@@ -1,4 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { Cell } from 'src/app/components/models/cell/cell.model';
 import { FireService } from 'src/app/services/items/fire/fire.service';
 import { FluidService } from 'src/app/services/items/fluid/fluid.service';
@@ -27,7 +28,6 @@ export class CavernsBoardComponent implements OnInit {
   public items!: Array<Cell>;
   public isResetting!: boolean;
   public selectedItem: Cell;
-  public volume: number = 1;
   public isStarted: boolean = false;
   //#endregion publics
 
@@ -70,7 +70,8 @@ export class CavernsBoardComponent implements OnInit {
     private readonly fluidService: FluidService,
     private readonly woodService: WoodService,
     private readonly sandService: SandService,
-    private readonly fireService: FireService
+    private readonly fireService: FireService,
+    private readonly router: Router
   ) {
     this.items = this.itemsService.getItems();
     this.selectedItem = this.items[0];
@@ -80,9 +81,13 @@ export class CavernsBoardComponent implements OnInit {
     this.reset();
   }
 
-  public changeItem() {
+  public changeItem(): void {
     let index: number = this.items.indexOf(this.selectedItem);
     this.selectedItem = this.items[++index % this.items.length];
+  }
+
+  public navigateAddItem(): void {
+    this.router.navigate(['/caverns/add']);
   }
 
   public async reset(): Promise<void> {
@@ -119,7 +124,6 @@ export class CavernsBoardComponent implements OnInit {
   public setCell(i: number, j: number, event?: MouseEvent): void {
     if ((event && event.buttons === 1) || !event) {
       this.cells[i][j] = Object.assign({}, this.selectedItem);
-      this.cells[i][j].volume = this.volume;
     } else if (event && event.buttons === 2) console.log(this.cells[i][j]);
   }
 
