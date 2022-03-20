@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Cell } from 'src/app/components/models/cell/cell.model';
+import { FireService } from 'src/app/services/items/fire/fire.service';
 import { FluidService } from 'src/app/services/items/fluid/fluid.service';
 import { ItemsService } from 'src/app/services/items/items.service';
 import { SandService } from 'src/app/services/items/sand/sand.service';
@@ -68,7 +69,8 @@ export class CavernsBoardComponent implements OnInit {
     private readonly itemsService: ItemsService,
     private readonly fluidService: FluidService,
     private readonly woodService: WoodService,
-    private readonly sandService: SandService
+    private readonly sandService: SandService,
+    private readonly fireService: FireService
   ) {
     this.items = this.itemsService.getItems();
     this.selectedItem = this.items[0];
@@ -161,6 +163,28 @@ export class CavernsBoardComponent implements OnInit {
               this.cells[i][j].name === this.items[2].name
             )
               this.sandService.handleSand(
+                this.cells,
+                newCells,
+                this.items,
+                i,
+                j
+              );
+            if (
+              item === this.cells[i][j].behavior &&
+              this.cells[i][j].name === this.items[5].name
+            )
+              this.fireService.handleFire(
+                this.cells,
+                newCells,
+                this.items,
+                i,
+                j
+              );
+            if (
+              item === this.cells[i][j].behavior &&
+              this.cells[i][j].name === this.items[6].name
+            )
+              this.fireService.handleLightSmoke(
                 this.cells,
                 newCells,
                 this.items,
