@@ -135,10 +135,7 @@ export class CavernsBoardComponent implements OnInit {
             newCells[i][j] = Object.assign({}, this.items[1]);
 
           if (i >= 1 && j >= 1 && i < this._height - 1 && j < this._width - 1) {
-            if (
-              item === this.cells[i][j].behavior &&
-              this.cells[i][j].name === this.items[0].name
-            )
+            if (item === this.cells[i][j].behavior && item === 0)
               this.fluidService.handleWater(
                 this.cells,
                 newCells,
@@ -147,10 +144,7 @@ export class CavernsBoardComponent implements OnInit {
                 j,
                 this._waterThreshold
               );
-            if (
-              item === this.cells[i][j].behavior &&
-              this.cells[i][j].name === this.items[3].name
-            )
+            if (item === this.cells[i][j].behavior && item === 1)
               this.woodService.handleWood(
                 this.cells,
                 newCells,
@@ -158,10 +152,7 @@ export class CavernsBoardComponent implements OnInit {
                 i,
                 j
               );
-            if (
-              item === this.cells[i][j].behavior &&
-              this.cells[i][j].name === this.items[2].name
-            )
+            if (item === this.cells[i][j].behavior && item === 2)
               this.sandService.handleSand(
                 this.cells,
                 newCells,
@@ -169,10 +160,7 @@ export class CavernsBoardComponent implements OnInit {
                 i,
                 j
               );
-            if (
-              item === this.cells[i][j].behavior &&
-              this.cells[i][j].name === this.items[5].name
-            )
+            if (item === this.cells[i][j].behavior && item === 3)
               this.fireService.handleFire(
                 this.cells,
                 newCells,
@@ -180,10 +168,7 @@ export class CavernsBoardComponent implements OnInit {
                 i,
                 j
               );
-            if (
-              item === this.cells[i][j].behavior &&
-              this.cells[i][j].name === this.items[6].name
-            )
+            if (item === this.cells[i][j].behavior && item === 4)
               this.fireService.handleLightSmoke(
                 this.cells,
                 newCells,
