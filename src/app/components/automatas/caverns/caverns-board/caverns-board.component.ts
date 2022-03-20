@@ -1,6 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Cell } from 'src/app/components/models/cell/cell.model';
+import { FluidService } from 'src/app/services/items/fluid/fluid.service';
 import { ItemsService } from 'src/app/services/items/items.service';
+import { WoodService } from 'src/app/services/items/wood/wood.service';
 @Component({
   selector: 'app-caverns-board',
   templateUrl: './caverns-board.component.html',
@@ -61,7 +63,11 @@ export class CavernsBoardComponent implements OnInit {
   }
   //#endregion setters
 
-  constructor(private readonly itemsService: ItemsService) {
+  constructor(
+    private readonly itemsService: ItemsService,
+    private readonly fluidService: FluidService,
+    private readonly woodService: WoodService
+  ) {
     this.items = this.itemsService.getItems();
     this.selectedItem = this.items[0];
   }
@@ -114,32 +120,41 @@ export class CavernsBoardComponent implements OnInit {
   }
 
   public step(): void {
-    /*const newCells = this.cells.map((row: Array<Cell>) =>
-      row.map((cell: Cell) => {
-        if (
-          cell.name !== this.items[1].name &&
-          cell.name !== this.items[4].name
-        )
-          return Object.assign({}, this.items[4]);
-        else return cell;
-      })
-    );*/
-    const newCells: Array<Array<Cell>> = new Array(this._height)
-      .fill(Object.assign({}, this.items[4]))
-      .map(() => new Array(this._width).fill(Object.assign({}, this.items[4])));
-    for (let i = 0; i < this._height; i++) {
-      for (let j = 0; j < this._width; j++) {
-        if (this.cells[i][j].name === this.items[1].name)
-          newCells[i][j] = Object.assign({}, this.items[1]);
+    for (let item = 0; item < this.items.length; item++) {
+      const newCells = this.cells.map((row: Array<Cell>) =>
+        row.map((cell: Cell) => cell)
+      );
 
-        if (i >= 1 && j >= 1 && i < this._height - 1 && j < this._width - 1) {
-          if (this.cells[i][j].name === this.items[0].name)
-            this.handleWater(newCells, i, j);
+      for (let i = 0; i < this._height; i++) {
+        for (let j = 0; j < this._width; j++) {
+          if (this.cells[i][j].name === this.items[1].name)
+            newCells[i][j] = Object.assign({}, this.items[1]);
+
+          if (i >= 1 && j >= 1 && i < this._height - 1 && j < this._width - 1) {
+            if (item === 0 && this.cells[i][j].name === this.items[0].name)
+              this.fluidService.handleWater(
+                this.cells,
+                newCells,
+                this.items,
+                i,
+                j,
+                this._waterThreshold
+              );
+            if (item === 1 && this.cells[i][j].name === this.items[3].name)
+              this.woodService.handleWood(
+                this.cells,
+                newCells,
+                this.items,
+                i,
+                j
+              );
+          }
         }
       }
+
+      this.cells.map((row) => row.map((cell: Cell) => (cell.flowed = false)));
+      this.cells = newCells;
     }
-    this.cells.map((row) => row.map((cell: Cell) => (cell.flowed = false)));
-    this.cells = newCells;
   }
 
   public async start(): Promise<void> {
@@ -189,108 +204,6 @@ export class CavernsBoardComponent implements OnInit {
     if (this.cells[i + 1][j + 1].name === neighbour) ++neighbours;
 
     return neighbours;
-  }
-
-  private handleWater(
-    newCells: Array<Array<Cell>>,
-    i: number,
-    j: number
-  ): void {
-    /*if (this.cells[i + 1][j].name !== this.items[1].name) {
-      if (newCells[i + 1][j].name === this.items[0].name)
-        newCells[i + 1][j].volume! += this.cells[i][j].volume!;
-      else newCells[i + 1][j] = this.cells[i][j];
-    } else if (newCells[i][j].name === this.items[0].name) {
-      newCells[i][j].volume! += this.cells[i][j].volume!;
-    } else newCells[i][j] = this.cells[i][j];*/
-    if (this.cells[i + 1][j].name === this.items[4].name) {
-      newCells[i][j] = Object.assign({}, this.items[4]);
-      newCells[i + 1][j] = this.cells[i][j];
-      newCells[i + 1][j].flowed = true;
-    } else if (this.cells[i + 1][j].name === this.items[0].name) {
-      if (
-        this.cells[i + 1][j].volume! + this.cells[i][j].volume! >=
-        this._waterThreshold
-      ) {
-        const remainder = this._waterThreshold - this.cells[i + 1][j].volume!;
-        newCells[i][j] = this.cells[i][j];
-        newCells[i + 1][j] = this.cells[i + 1][j];
-        newCells[i][j].volume = this.cells[i][j].volume! - remainder;
-        newCells[i + 1][j].volume = this.cells[i + 1][j].volume! + remainder;
-        newCells[i][j].flowed = true;
-        newCells[i + 1][j].flowed = true;
-      } else {
-        newCells[i][j] = Object.assign({}, this.items[4]);
-        newCells[i + 1][j] = this.cells[i + 1][j];
-        newCells[i + 1][j].volume! += this.cells[i][j].volume!;
-        newCells[i + 1][j].flowed = true;
-      }
-    } else newCells[i][j] = this.cells[i][j];
-
-    if (newCells[i][j].volume === 0)
-      newCells[i][j] = Object.assign({}, this.items[4]);
-
-    if (
-      (this.cells[i + 1][j].name === this.items[1].name ||
-        this.cells[i + 1][j].name === this.items[0].name) &&
-      newCells[i][j].name === this.items[0].name
-    ) {
-      if (
-        (newCells[i][j - 1].name === this.items[4].name ||
-          newCells[i][j - 1].name === this.items[0].name) &&
-        !newCells[i][j - 1].flowed
-      ) {
-        if (newCells[i][j].volume! <= 0.25) return;
-        if (this.handleFlow(newCells, i, j - 1, false))
-          newCells[i][j].volume! -= 0.25;
-      }
-      if (
-        (newCells[i][j + 1].name === this.items[4].name ||
-          newCells[i][j + 1].name === this.items[0].name) &&
-        !newCells[i][j + 1].flowed
-      ) {
-        if (newCells[i][j].volume! <= 0.25) return;
-        if (this.handleFlow(newCells, i, j + 1, true))
-          newCells[i][j].volume! -= 0.25;
-      }
-      newCells[i][j].flowed = true;
-    }
-
-    if (
-      newCells[i][j].volume! > this._waterThreshold &&
-      !newCells[i - 1][j].flowed
-    ) {
-      if (newCells[i - 1][j].name === this.items[0].name) {
-        newCells[i - 1][j].volume! +=
-          newCells[i][j].volume! - this._waterThreshold;
-      } else if (newCells[i - 1][j].name !== this.items[1].name) {
-        newCells[i - 1][j] = Object.assign({}, this.items[0]);
-        newCells[i - 1][j].volume =
-          newCells[i][j].volume! - this._waterThreshold;
-      }
-    }
-  }
-
-  private handleFlow(
-    newCells: Array<Array<Cell>>,
-    i: number,
-    j: number,
-    right: boolean
-  ): boolean {
-    if (this.cells[i][j].name === this.items[4].name) {
-      newCells[i][j] = Object.assign({}, this.items[0]);
-      newCells[i][j].volume = 0.25;
-      return true;
-    } else if (
-      right
-        ? this.cells[i][j].name === this.items[0].name
-        : newCells[i][j].name === this.items[0].name
-    ) {
-      newCells[i][j] = this.cells[i][j];
-      newCells[i][j].volume! += 0.25;
-      return true;
-    }
-    return false;
   }
 
   private async sleep(): Promise<void> {
